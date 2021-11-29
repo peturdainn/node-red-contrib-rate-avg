@@ -1,0 +1,125 @@
+<!--
+The MIT License (MIT)
+
+Copyright (c) 2021 @peturdainn (petur@lunda.be)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+
+<script type="text/x-red" data-template-name="rate-avg">
+    <div class="form-row">
+      <label for="node-input-windowtype"><i class="fa fa-tasks"></i> <span>Rate Type</span></label>
+      <select id="node-input-windowtype" style="width:220px !important">
+        <option value="count">Count</option>
+        <option value="time">Time</option>
+      </select>
+    </div>
+
+    <div id="time-details" class="form-row">
+      <label for="node-input-timewindow"><i class="fa fa-clock-o"></i> <span>Time</span></label>
+      <input type="text" id="node-input-timewindow" placeholder="Time" style="text-align:end; width:50px !important">
+      <select id="node-input-timeunits" style="width:145px !important">
+        <option value="milliseconds">Milliseconds</option>
+        <option value="seconds">Seconds</option>
+        <option value="minutes">Minutes</option>
+        <option value="hours">Hours</option>
+        <option value="days">Days</option>
+      </select>
+    </div>
+
+    <div id="count-details" class="form-row">
+      <label for="node-input-countwindow"><i class="fa fa-clock-o"></i> <span></span>Count</label>
+      <input type="text" id="node-input-countwindow" placeholder="1" style="text-align:end; width:30px !important">
+      <label for="node-input-countunits"><span>Message Count</span></label>
+    </div>
+
+    <div class="form-row">
+      <label for="node-input-round"><i class="fa fa-tag"></i> <span>Round output</span></label>
+      <input type="text" id="node-input-round" placeholder="0" style="text-align:end; width:30px !important">
+      <label for="node-input-roundlabel"><span>Decimals (0-3)</span></label>
+    </div>
+    
+    <div class="form-row">
+      <label for="node-input-name"><i class="fa fa-tag"></i> <span>Nodename</span></label>
+      <input type="text" id="node-input-name" placeholder="Nodename" style="width:220px !important" >
+    </div>
+
+</script>
+
+<script type="text/x-red" data-help-name="calculate">
+    <p>Stores messages by <code>msg.topic</code> according to the configured time or count window. When the time or count is reached, emit a message holding the average of those messages. The output can optionally be rounded to a number of decimals (0-3). Non-numerical values are converted to numbers.</p>
+    <p>Messages without topic will get assigned a topic called _none_.</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('rate-avg',{
+        category: 'function',
+        color:"#E0E0FF",
+        defaults: {
+            name: {value:""},
+            windowtype: {value:"time", required:true},
+            timewindow: {value:"10", required:true, validate:RED.validators.number()},
+            timeunits: {value:"seconds"},
+            countwindow: {value:"10", required:true, validate:RED.validators.number()},
+            round: {value:"0"}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "function.png",
+        label: function() {
+            return this.name||"rate-avg";
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+        oneditprepare: function() {
+          var node = this;
+          $( "#node-input-timewindow" ).spinner({min:1});
+          $( "#node-input-countwindow" ).spinner({min:1});
+//          $( "#node-input-nbRateUnits" ).spinner({min:1});
+
+          $('.ui-spinner-button').click(function() {
+              $(this).siblings('input').change();
+          });
+          if (this.windowtype == "count") {
+            $("#count-details").show();
+            $("#time-details").hide();
+          } else if (this.windowtype == "time") {
+            $("#count-details").hide();
+            $("#time-details").show();
+          }
+
+          if (!this.timeunits) {
+            $("#node-input-timeunits option").filter(function() {
+              return $(this).val() == 'seconds';
+            }).attr('selected', true);
+          }
+
+          $("#node-input-windowtype").on("change",function() {
+            if (this.value == "count") {
+              $("#count-details").show();
+              $("#time-details").hide();
+            } else if (this.value == "time") {
+              $("#count-details").hide();
+              $("#time-details").show();
+            } 
+          });
+        }
+    });
+</script>

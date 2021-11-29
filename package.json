@@ -1,0 +1,27 @@
+{
+    "name": "node-red-contrib-rate-avg",
+    "version": "0.0.1",
+    "description": "An average producing rate-limitter for node-red",
+    "dependencies": {
+        "node-red": "^1.0.0"
+    },
+    "keywords": [
+        "node-red",
+        "average",
+        "rate",
+        "ratelimit",
+        "ratelimitter",
+        "delay",
+        "count",
+        "round"
+    ],
+    "node-red": {
+        "nodes": {
+            "rate-avg": "rate-avg.js"
+        }
+    },
+    "license": "MIT",
+    "author": "Peter D'Hoye",
+    "repository": "github:peturdainn/node-red-contrib-rate-avg",
+    "bugs": "https://github.com/peturdainn/node-red-contrib-rate-avg/issues"
+}
