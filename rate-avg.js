@@ -22,7 +22,7 @@
  * OR OTHER DEALINGS IN THE SOFTWARE.
  **/
 
-// rate-limitter (time or count) with average and rounding
+// rate-limiter (time or count) with average and rounding
 
 module.exports = function(RED)
 {
