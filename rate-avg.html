@@ -62,9 +62,12 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 </script>
 
-<script type="text/x-red" data-help-name="calculate">
-    <p>Stores messages by <code>msg.topic</code> according to the configured time or count window. When the time or count is reached, emit a message holding the average of those messages. The output can optionally be rounded to a number of decimals (0-3). Non-numerical values are converted to numbers.</p>
-    <p>Messages without topic will get assigned a topic called _none_.</p>
+<script type="text/html" data-help-name="rate-avg">
+    <p>Rate-limit messages (by count or time), outputs the average.</p>
+    <p>Select a time or count window for the rate limit.</p>
+    <p>At the configured rate of message count or time, an average will be produced.</p>
+    <p>Calculation is done per topic, it will try to convert payloads to numbers.</p>
+    <p>The output can be rounded to 0-3 decimals.</p>
 </script>
 
 <script type="text/javascript">
